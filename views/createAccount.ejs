@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Home</title>
+    <title>Create Account</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -28,19 +28,20 @@ h1 {font-size: 64px;}
   </head>
   <body onload="load()">
     <div id="spacer"></div>
-    <h1>Chat V2 Home</h1>
-    <div id="spacer"></div>Welcome to Chat V2! Please enter login information or click create account:
+    <h1>Chat V2 Account Creation</h1>
+    <div id="spacer"></div>Create an account for Chat V2:
     <div id="spacer"></div>
     <div id="content">
       <form action="/login" method="post" autocomplete="off" target="responseFrame">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username"><br>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br>
         <label for="pass">Password:</label>
         <input type="password" id="pass" name="pass"><br>   
     </div>
       <input type="submit">
-    </form>
-    <button>Create Account</button><br>
+    </form><br>
     <div id="responseText"></div>
     <iframe name="responseFrame" id="responseFrame" style="display: none;"></iframe>
     <script>
