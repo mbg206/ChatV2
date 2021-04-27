@@ -26,41 +26,24 @@ h1 {font-size: 64px;}
 #responseText {color: red;}
     </style>
   </head>
-  <body onload="load()">
+  <body>
     <div id="spacer"></div>
     <h1>Chat V2 Account Creation</h1>
     <div id="spacer"></div>Create an account for Chat V2:
     <div id="spacer"></div>
     <div id="content">
-      <form action="/login" method="post" autocomplete="off" target="responseFrame">
+      <form action="/postcreate" method="post" autocomplete="off" target="_top">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username"><br>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name"><br>
         <label for="pass">Password:</label>
-        <input type="password" id="pass" name="pass"><br>   
+        <input type="password" id="pass" name="pass"><br> 
+        <label for="passconfirm">Confirm Password:</label>
+        <input type="password" id="passconfirm" name="passconfirm"><br>   
     </div>
       <input type="submit">
     </form><br>
     <div id="responseText"></div>
-    <iframe name="responseFrame" id="responseFrame" style="display: none;"></iframe>
     <script>
-function load() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const response = urlParams.get('response');
-  if (response == "success") {
-    document.getElementById('responseText').innerHTML = "Your account has been created! Please log in to your account on the home screen.";
-  }
-  if (response == "usertaken") {
-    document.getElementById('responseText').innerHTML = "That username is taken. Please enter a new one.";
-  }
-  if (response == "toolong") {
-    document.getElementById('responseText').innerHTML = "The username or password you have entered is too long. Please enter a different one.";
-  }
-  if (response == "tooshort") {
-    document.getElementById('responseText').innerHTML = "The username or password you have entered is too short. Please enter a different one.";
-  }
-}
 document.getElementById('username').onkeypress = function(event){if (event.which == 32) {event.preventDefault();}};
 document.getElementById('pass').onkeypress = function(event){if (event.which == 32) {event.preventDefault();}};
     </script>

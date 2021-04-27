@@ -32,7 +32,7 @@ h1 {font-size: 64px;}
     <div id="spacer"></div>Welcome to Chat V2! Please enter login information or click create account:
     <div id="spacer"></div>
     <div id="content">
-      <form action="/login" method="post" autocomplete="off" target="responseFrame">
+      <form action="/postlogin" method="post" autocomplete="off" target="_top">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username"><br>
         <label for="pass">Password:</label>
@@ -40,23 +40,28 @@ h1 {font-size: 64px;}
     </div>
       <input type="submit">
     </form>
-    <button>Create Account</button><br>
+    <button onclick="window.location.href = '/createaccount';">Create Account</button><br>
     <div id="responseText"></div>
-    <iframe name="responseFrame" id="responseFrame" style="display: none;"></iframe>
     <script>
 function load() {
   const urlParams = new URLSearchParams(window.location.search);
   const response = urlParams.get('response');
-  if (response == "success") {
-    document.getElementById('responseText').innerHTML = "Your account has been created! Please log in to your account on the home screen.";
+  if (response == "lincorrect") {
+    document.getElementById('responseText').innerHTML = "The username or password you have entered is incorrect.";
   }
-  if (response == "usertaken") {
+  if (response == "csuccess") {
+    document.getElementById('responseText').innerHTML = "Your account has been created! Please log in to your account.";
+  }
+  if (response == "cincorrect") {
+    document.getElementById('responseText').innerHTML = "The passwords you entered didn't match.";
+  }
+  if (response == "cusertaken") {
     document.getElementById('responseText').innerHTML = "That username is taken. Please enter a new one.";
   }
-  if (response == "toolong") {
+  if (response == "ctoolong") {
     document.getElementById('responseText').innerHTML = "The username or password you have entered is too long. Please enter a different one.";
   }
-  if (response == "tooshort") {
+  if (response == "ctooshort") {
     document.getElementById('responseText').innerHTML = "The username or password you have entered is too short. Please enter a different one.";
   }
 }
