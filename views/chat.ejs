@@ -1,28 +1,159 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Create Account</title>
+    <title>Chat V2</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
 body {
   font-family: Arial;
-  text-align: center;
   background-color: gray;
   color: white;
+  font-size: 24px;
 }
-body, input, button {font-size: 32px;}
-input, button {
-  border-radius: 16px;
-  padding: 8px;
+#messages {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: calc(100vw - 256px);
+  padding: 0;
+  margin: 0;
 }
-h1 {font-size: 64px;}
+.chatMessage {padding: 8px;}
+#sideBar {
+  position: absolute;
+  background-color: #707070;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 256px;
+}
+.sideButton {
+  padding: 16px;
+  border: none;
+  background-color: #707070;
+  width: 256px;
+  margin: 0;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
+.sideButton:hover {background-color: #505050;}
+.sideButton:focus {outline: none;}
+.spacer {height: 32px;}
+#dmsList {
+  height: calc(100vh - 92px);
+  overflow: auto;
+}
     </style>
+    <script src="../../socket.io/socket.io.js"></script>
   </head>
-  <body>
-    
+  <body onload="load()">
+    <ul id="messages"><li>aa</li></ul>
+    <div id="sideBar">
+      <button class="sideButton" onclick='changeButtons()'>Friends</button>
+      <div class="spacer"></div>
+      <div id="dmsList">
+        <button class="sideButton">DM</button><button class="sideButton">DM</button><button class="sideButton">DM</button><button class="sideButton">DM</button><button class="sideButton">DM</button><button class="sideButton">DM</button>
+      </div>
+    </div>
     <script>
+let socket = io();
+var showingMessages = true;
+var messages, friends, name, currentRoom;
+function load() {
+  let token = document.cookie.split('=')[1];
+  socket.emit('logon', token);
+}
 
+socket.on('message', (message, group) => {
+  if (group == currentRoom.id) {
+    let element = document.createElement('li');
+    element.innerHTML = message;
+    document.getElementById('messages').appendChild(element);
+  }
+})
+
+socket.on('loadFriends', (f) => {
+  friends = JSON.parse(f);
+  if (!(showingMessages)) {reloadButtons();}
+})
+socket.on('loadMessages', (m) => {
+  messages = JSON.parse(m);
+  if (showingMessages) {reloadButtons();}
+})
+socket.on('myName', (n) => {name = n})
+
+function reloadButtons() {
+  document.getElementById('dmsList').innerHTML = '';
+  if (showingMessages) {
+    for (var i = 0; i < messages.length; i++) {
+      let button = document.createElement('button');
+      button.classList.add('sideButton');
+      if (messages[i].type != 'dm') {button.innerHTML = messages[i].name;}
+      else {
+        if (messages[i].users[0] == name) {button.innerHTML = messages[i].users[1];}
+        else {button.innerHTML = messages[i].users[0];}
+      }
+      button.setAttribute("onclick", "loadMsgs('" + messages[i].id + "');");
+      document.getElementById('dmsList').appendChild(button);
+    }
+  }
+  else {
+    for (var i = 0; i < friends.length; i++) {
+      let button = document.createElement('button');
+      button.classList.add('sideButton');
+      button.innerHTML = friends[i];
+      document.getElementById('dmsList').appendChild(button);
+    }
+  }
+}
+function changeButtons() {
+  document.getElementById('dmsList').innerHTML = '';
+  if (showingMessages) {
+    for (var i = 0; i < friends.length; i++) {
+      let button = document.createElement('button');
+      button.classList.add('sideButton');
+      button.innerHTML = friends[i];
+      document.getElementById('dmsList').appendChild(button);
+    }
+    showingMessages = false;
+  }
+  else {
+    for (var i = 0; i < messages.length; i++) {
+      let button = document.createElement('button');
+      button.classList.add('sideButton');
+      if (messages[i].type != 'dm') {button.innerHTML = messages[i].name;}
+      else {
+        if (messages[i].users[0] == name) {button.innerHTML = messages[i].messages[i].users[1];}
+        else {button.innerHTML = messages[i].messages[i].users[0];}
+      }
+      button.setAttribute("onclick", "loadMsgs('" + messages[i].id + "');");
+      document.getElementById('dmsList').appendChild(button);
+    }
+    showingMessages = true;
+  }
+}
+
+function loadMsgs(id) {
+  document.getElementById('messages').innerHTML = '';
+  for (var i = 0; i < messages.length; i++) {
+    if (messages[i].id == id) {
+      currentRoom = messages[i];
+      break;
+    }
+  }
+  for (var i = 0; i < currentRoom.messages.length; i++) {
+    let element = document.createElement("li");
+    element.innerHTML = currentRoom.messages[i];
+    element.classList.add('chatMessage');
+    document.getElementById('messages').appendChild(element);
+  }
+}
+//socket.on('redirectHome', () => {window.location.href = '../';});
+
+//document.getElementById('swapMenu').onclick = function(){};
     </script>
   </body>
 </html>
